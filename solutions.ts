@@ -76,3 +76,27 @@ const courses: Course[] = [
   { title: "Next.js Pro", students: 85, isPublished: true },
 ];
 console.log(getPopularCourses(courses, 80));
+
+
+
+
+
+// Problem - 06
+function pluckValues <T, K extends keyof T> (
+  items: T[],
+  key: K 
+): T[K][] {
+  
+    const result: T[K][] = [];
+    for(let i = 0; i < items.length; i++) {
+      result.push(items[i][key]);
+    }
+    return result;
+}
+const users = [
+  { id: 1, name: "Rakib", role: "Admin" },
+  { id: 2, name: "Sadia", role: "Editor" },
+  { id: 3, name: "Tariq", role: "Subscriber" }
+];
+console.log(pluckValues(users, "name"));
+console.log(pluckValues(users, "id"));
