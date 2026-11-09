@@ -134,3 +134,32 @@ const manager = new Manager("Alice", 50000, "Engineering");
 console.log(manager.getDetails());
 console.log(manager.getRoleInfo());
 
+
+// problem - 08
+
+function validateAgeAsync (age: number): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if(age >= 18) {
+      setTimeout(() => {
+        resolve("Access Granted");
+      }, 1000)
+    } else {
+      reject(new Error("Access Denied: Must be 18 or older"));
+    }
+  })
+}
+validateAgeAsync(20)
+    .then((message) => {
+        console.log(message);
+    })
+    .catch((error: Error) => {
+        console.log(error.message);
+    });
+
+validateAgeAsync(15)
+    .then((message) => {
+        console.log(message);
+    })
+    .catch((error: Error) => {
+        console.log(error.message);
+    });
