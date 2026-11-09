@@ -1,79 +1,63 @@
-TypeScript-এ Type Narrowing কী? typeof, instanceof এবং in অপারেটরের ব্যবহার
-Type Narrowing হলো TypeScript-এর এমন একটি প্রক্রিয়া, যার মাধ্যমে কোনো ভেরিয়েবলের একাধিক সম্ভাব্য ডেটার ধরন থেকে নির্দিষ্ট একটি ধরন শনাক্ত করা যায়।
+# TypeScript-এ Type Narrowing কী এবং এর বাস্তব ব্যবহার
 
-সহজ ভাষায়, কোনো ভেরিয়েবল বিভিন্ন ধরনের ডেটা গ্রহণ করতে পারলে শর্তের মাধ্যমে তার সঠিক ধরন নির্ধারণ করাকে Type Narrowing বলে। এর ফলে কোডে ভুল কমে এবং নিরাপদে কাজ করা যায়।
-১. typeof অপারেটর
-typeof ব্যবহার করে কোনো ভেরিয়েবলের সাধারণ ডেটার ধরন শনাক্ত করা যায়।
+TypeScript-এ যখন আমরা কোনো ভ্যারিয়েবলে একাধিক ধরণের ডেটা (Union Type) ব্যবহারের অনুমতি দিই, তখন কোড রান করার আগে নিশ্চিত হওয়া যায় না যে নির্দিষ্ট মুহূর্তে সেখানে কী ধরনের মান রয়েছে। এই পরিস্থিতিতে বিভিন্ন শর্ত বা চেকের মাধ্যমে ভ্যারিয়েবলের সম্ভাব্য একাধিক টাইপ থেকে নির্দিষ্ট একটি টাইপ নির্ধারণ করার প্রক্রিয়াকেই **Type Narrowing** বলা হয়। সহজ কথায়, টাইপের বড় সম্ভাবনা থেকে ছোট বা সঠিক টাইপে নেমে আসাই হলো ন্যারোইং। এর ফলে ভুল মেথড কল করার ঝুঁকি কমে এবং কোড শতভাগ টাইপ-সেফ থাকে।
 
-উদাহরণ:
+---
 
-```
-function process(value: string | number) {
-if (typeof value === "string") {
-return value.toUpperCase();
-} else {
-return value \* 10;
+## ১. `typeof` অপারেটর
+সাধারণ প্রিমিটিভ ডেটা যেমন `string`, `number` বা `boolean` আলাদা করতে আমরা `typeof` গার্ড ব্যবহার করি। এটি রানটাইমে ভ্যারিয়েবলের ধরন পরীক্ষা করে সঠিক ব্লকটি চালাতে সাহায্য করে।
+
+```typescript
+function processValue(val: string | number) {
+  if (typeof val === "string") {
+    return val.toUpperCase();
+  }
+  return val * 10;
 }
-}
-
-console.log(process("sobuj")); // SOBUJ
-console.log(process(10)); // 100
 ```
+এখানে `if` ব্লকের ভেতরে ঢোকার পর TypeScript নিশ্চিতভাবে বুঝতে পারে যে `val` একটি স্ট্রিং, তাই নির্ভয়ে স্ট্রিংয়ের মেথডগুলো ব্যবহার করা যায়।
 
-এখানে typeof দিয়ে যাচাই করা হয়েছে ভেরিয়েবলটি লেখা নাকি সংখ্যা।
-২. instanceof অপারেটর
-instanceof ব্যবহার করে কোনো অবজেক্ট নির্দিষ্ট শ্রেণির তৈরি কি না, তা যাচাই করা যায়।
+---
 
-উদাহরণ:
+## ২. `instanceof` অপারেটর
+কোনো অবজেক্ট নির্দিষ্ট কোনো ক্লাসের ইনস্ট্যান্স কি না তা যাচাই করার জন্য `instanceof` ব্যবহার করা হয়। অবজেক্ট-ওরিয়েন্টেড কোডে একাধিক ক্লাসের মধ্যে পার্থক্য করতে এটি খুব কাজে লাগে।
 
-```
+```typescript
 class Dog {
-bark() {
-return "Dog is barking";
+  bark() { return "Woof!"; }
 }
-}
-
 class Cat {
-meow() {
-return "Cat is meowing";
-}
+  meow() { return "Meow!"; }
 }
 
-function makeSound(animal: Dog | Cat) {
-if (animal instanceof Dog) {
-return animal.bark();
-} else {
-return animal.meow();
-}
+function handlePet(pet: Dog | Cat) {
+  if (pet instanceof Dog) {
+    return pet.bark();
+  }
+  return pet.meow();
 }
 ```
+শর্তের মাধ্যমে TypeScript নিশ্চিত হয় অবজেক্টটি `Dog` ক্লাসের, ফলে এর নিজস্ব মেথড কল করা সম্ভব হয়।
 
-এখানে instanceof দিয়ে অবজেক্টটি Dog নাকি Cat শ্রেণির, তা শনাক্ত করা হয়েছে।
-৩. in অপারেটর in ব্যবহার করে কোনো অবজেক্টের মধ্যে নির্দিষ্ট বৈশিষ্ট্য আছে কি না, তা যাচাই করা যায়।
+---
 
-উদাহরণ:
+## ৩. `in` অপারেটর
+কাস্টম টাইপ বা অবজেক্টে যখন কোনো ক্লাস থাকে না, তখন নির্দিষ্ট কোনো প্রোপার্টির অস্তিত্ব যাচাই করতে `in` অপারেটর কাজে আসে।
 
-```
-type Admin = {
-name: string;
-role: string;
-};
-
-type User = {
-name: string;
-email: string;
-};
+```typescript
+type Admin = { name: string; role: string };
+type User = { name: string; email: string };
 
 function checkUser(person: Admin | User) {
-if ("role" in person) {
-return person.role;
-} else {
-return person.email;
-}
+  if ("role" in person) {
+    return `Admin: ${person.role}`;
+  }
+  return `User: ${person.email}`;
 }
 ```
+এখানে অবজেক্টে `role` কি (key) উপস্থিত আছে কি না তা দেখেই TypeScript অবজেক্টটির সঠিক কাঠামো শনাক্ত করে ফেলে।
 
-এখানে in দিয়ে অবজেক্টের মধ্যে role বৈশিষ্ট্য আছে কি না, তা যাচাই করা হয়েছে।
+---
 
-
-Type Narrowing TypeScript-এর একটি গুরুত্বপূর্ণ বৈশিষ্ট্য। typeof সাধারণ ডেটার ধরন, instanceof শ্রেণির পরিচয় এবং in অবজেক্টের বৈশিষ্ট্য যাচাই করতে ব্যবহৃত হয়। এগুলো ব্যবহার করলে কোড আরও নিরাপদ, পরিষ্কার এবং সহজে পরিচালনাযোগ্য হয়।
+## উপসংহার
+বাস্তব জীবনের প্রজেক্টে এ ধরনের টাইপ গার্ড ব্যবহার করলে রানটাইম এরর প্রায় শূন্যের কোঠায় নেমে আসে। `typeof` প্রিমিটিভ মান, `instanceof` ক্লাসের পরিচয় এবং `in` অবজেক্টের বৈশিষ্ট্য যাচাইয়ের মাধ্যমে আমাদের কোডকে করে আরও নির্ভুল, নিরাপদ ও পাঠযোগ্য।
