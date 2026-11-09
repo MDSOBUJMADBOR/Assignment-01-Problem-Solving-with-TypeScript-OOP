@@ -1,12 +1,4 @@
-// Sample Input:
-// multiplyValue(10);
-// multiplyValue(10, 5);
-// multiplyValue(7, 0);
-
-// Sample Output:
-// 20
-// 50
-// 0
+// Problem-01
 
 function multiplyValue(value: number, multiplier?: number): number {
   return value * (multiplier ?? 2);
@@ -16,18 +8,7 @@ console.log(multiplyValue(10));
 
 
 
-// Sample Input:
-// processInput("  TypeScript  ");
-// processInput(7);
-// processInput(true);
-// processInput(false);
-
-// Sample Output:
-// "typescript"
-// 70
-// "Active"
-// "Inactive"
-
+// Problem- 02
 function processInput(value: string | number | boolean): string | number {
  
     if (typeof value === "string") {
@@ -42,3 +23,32 @@ function processInput(value: string | number | boolean): string | number {
 console.log(processInput(" TypeScript "));
 console.log(processInput(true));
 console.log(processInput(50));
+
+
+
+
+// Problem-03
+function formatCoordinate (coordinate: readonly [number, number, string]): string {
+  const latitude = coordinate[0];
+  const longitude = coordinate[1];
+  const locationName = coordinate[2];
+
+  return `Location: ${locationName} (${latitude}, ${longitude})`
+}
+console.log(formatCoordinate([23.81,90.41, "Dhaka"]));
+
+
+
+// Problem - 04
+function concatenateArrays <T>(...arrays: T[][]): T[] {
+  const result: T[] = [];
+
+  for (const arr of arrays) {
+    for(const item of arr) {
+      result.push(item)
+    }
+  }
+  return result;
+}
+console.log(concatenateArrays(["a","b"],["c","d"]));
+console.log(concatenateArrays([1, 2], [3, 4], [5]));
